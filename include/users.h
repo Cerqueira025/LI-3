@@ -19,7 +19,7 @@ typedef struct User {
 } User;
 
 typedef struct UserTable {
-    User* hash_table[HASH_SIZE];
+  User* hash_table[HASH_SIZE];
 } UserTable;
 
 User* createUser(const char* id, const char* name, const char* email, const char* phone_number,

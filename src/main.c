@@ -10,6 +10,9 @@
 
 int main() {
   UserTable userTable;
+  for (int i = 0; i < HASH_SIZE; i++) {
+    userTable.hash_table[i] = NULL;
+  }
   memset(userTable.hash_table, 0, sizeof(userTable.hash_table));
   // Lê os usuários do arquivo CSV e insere na tabela de hash
   readUsersFromFile(&userTable, "users.csv");
