@@ -20,7 +20,7 @@ User* createUser(const char* id, const char* name, const char* email, const char
   }
   user->sex = sex;
   user->passport = strdup(passport);
-  strncpy(user->country_code, country_code, 2);
+  user->country_code = strdup(country_code);
   user->address = strdup(address);
   for (int i = 0; i < 6; i++) {
     user->account_creation[i] = account_creation[i];
@@ -36,7 +36,7 @@ void insertUser(UserTable* table, User* user) {
   user->next = table->hash_table[index];
   table->hash_table[index] = user;
 }
-/*
+
 void freeUser(User* user) {
   free(user->id);
   free(user->name);
@@ -49,7 +49,7 @@ void freeUser(User* user) {
   free(user);
 }
 
-
+//!!!!!!!
 // Função para liberar a memória alocada para a tabela de hash e usuários
 void freeUserTable(UserTable* table) {
   for (int i = 0; i < HASH_SIZE; i++) {
@@ -61,7 +61,7 @@ void freeUserTable(UserTable* table) {
     }
   }
 }
-*/
+
 // Função para buscar um usuário na tabela de hash com base no ID
 User* findUser(UserTable* table, char* id) {
   int index = return_hash(id);

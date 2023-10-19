@@ -10,7 +10,7 @@ typedef struct User {
   int birth_date[3]; //aaaa/MM/dd -> [aaaa,MM,dd]
   char sex;
   char* passport;
-  char country_code[2]; //atenção /0
+  char* country_code; //atenção /0
   char* address;
   int account_creation[6];
   char* pay_method;
@@ -27,8 +27,8 @@ User* createUser(const char* id, const char* name, const char* email, const char
                 const char* address, int account_creation[6], const char* pay_method, const char* account_status);
 
 void insertUser(UserTable* table, User* user);
-/*void freeUser(User* user);
-void freeUserTable(UserTable* table);*/
+void freeUser(User* user);
+void freeUserTable(UserTable* table);
 User* findUser(UserTable* table, char* id);
 void printUser(const User* user);
 
