@@ -57,7 +57,7 @@ int parse_users() {
 		char* pay_method = malloc(99*sizeof(char)); 	   
 		char* account_status = malloc(99*sizeof(char)); 
 
-		sscanf(buffer_aux, "%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%999[^;];%99[^;];%99[^;];%99[^\n]",
+		sscanf(buffer_aux, "%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^\n]",
             id, name, email, phone_number, birth_date, sex, passport, country_code, address, account_creation, pay_method, account_status);
   
 
@@ -78,24 +78,13 @@ int parse_users() {
 		free(account_status);
 
 	}
-		struct User* usr = g_hash_table_lookup(hash,"EmíVaz-Assunção1873");
-		printf("%s\n\n",usr->phone_number);
+	struct User* usr = g_hash_table_lookup(hash,"EmíVaz-Assunção1873");
+	printf("%s\n\n",usr->phone_number);
 
 	fclose(users);
 	return 0;
 }
 
-void freeUser(User* user) {
-  free(user->id);
-  free(user->name);
-  free(user->email);
-  free(user->phone_number);
-  free(user->passport);
-  free(user->address);
-  free(user->pay_method);
-  free(user->account_status);
-  free(user);
-}
 
 void printUser(const User* user) {
   if (user == NULL) {

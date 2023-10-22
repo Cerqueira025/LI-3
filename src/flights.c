@@ -7,7 +7,6 @@
 #include "flights.h"
 
 struct Flight* new_Flight(int id, char* airplane, char* plane_model, int total_seats, char* origin, char* destination, int schedule_departure_date[6], int schedule_arrival_date[6], int real_departure_date[6], int real_arrival_date[6], char* pilot, char* copilot, char* notes) {
-
 	struct Flight* new_Flight = malloc(sizeof(struct Flight));
 	new_Flight->id=id;
 	new_Flight->airline=strdup(airplane);
@@ -35,19 +34,16 @@ struct Flight* new_Flight(int id, char* airplane, char* plane_model, int total_s
 
 
 int parse_flight() {
-
 	char buffer[240];
 	
 	FILE* flights = fopen("flights.csv","r");
-
-	if(flights == NULL) return 1;
+  if(flights == NULL) return 1;
 
 	fgets(buffer, 240, flights); // ignora o cabeçalho
 
   struct Flight flights_table[1000];
   
 	while(fgets(buffer, 240, flights)) {
-
 		char* buffer_aux = buffer;
     int id;
     char* airline=malloc(99*sizeof(char));
@@ -78,8 +74,8 @@ int parse_flight() {
 	}
 
   //teste	
-  printf("%s\n\n",flights_table[76].notes);
+  printf("Flight notes: %s\n\n",flights_table[76].notes);
 
-	fclose(flights);
-	return 0;
+  fclose(flights);
+  return 0;
 }
