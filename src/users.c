@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <glib.h>
 #include <stdlib.h>
 #include <string.h>
 #include "datatypes.h"
@@ -7,34 +8,22 @@
 #include "passengers.h"
 #include "users.h"
 
-User* createUser(const char* id, const char* name, const char* email, const char* phone_number,
-                int birth_date[3], char sex, const char* passport, const char country_code[2],
-                const char* address, int account_creation[6], const char* pay_method, const char* account_status) {
-  User* user = (User*)malloc(sizeof(User));
-  user->id = strdup(id);
-  user->name = strdup(name);
-  user->email = strdup(email);
-  user->phone_number = strdup(phone_number);
-  for (int i = 0; i < 3; i++) {
-    user->birth_date[i] = birth_date[i];
-  }
-  user->sex = sex;
-  user->passport = strdup(passport);
-  user->country_code = strdup(country_code);
-  user->address = strdup(address);
-  for (int i = 0; i < 6; i++) {
-    user->account_creation[i] = account_creation[i];
-  }
-  user->pay_method = strdup(pay_method);
-  user->account_status = strdup(account_status);
-  user->next = NULL;
-  return user;
-}
+struct User* newUser(char* id, char* name, char* email, char* phone_number, char* birth_date, char* sex, char* passport, char* country_code, char* address, char* account_creation, char* pay_method, char* account_status) {
 
-void insertUser(UserTable* table, User* user) {
-  int index = return_hash(user->id);
-  user->next = table->hash_table[index];
-  table->hash_table[index] = user;
+	struct User* new_User=malloc(sizeof(struct User));
+	new_User->id=strdup(id);
+	new_User->name=strdup(name);
+	new_User->email=strdup(email);
+	new_User->phone_number=strdup(phone_number);
+	new_User->birth_date=strdup(birth_date);
+	new_User->sex=strdup(sex);
+	new_User->passport=strdup(passport);
+	new_User->country_code=strdup(country_code);
+	new_User->address=strdup(address);
+	new_User->account_creation=strdup(account_creation);
+	new_User->pay_method=strdup(pay_method);
+	new_User->account_status=strdup(account_status);
+	return new_User;
 }
 
 void freeUser(User* user) {
@@ -49,32 +38,6 @@ void freeUser(User* user) {
   free(user);
 }
 
-//!!!!!!!
-// Função para liberar a memória alocada para a tabela de hash e usuários
-void freeUserTable(UserTable* table) {
-  for (int i = 0; i < HASH_SIZE; i++) {
-    User* current = table->hash_table[i];
-    while (current != NULL) {
-      User* temp = current;
-      current = current->next;
-      freeUser(temp);
-    }
-  }
-}
-
-// Função para buscar um usuário na tabela de hash com base no ID
-User* findUser(UserTable* table, char* id) {
-  int index = return_hash(id);
-  User* current = table->hash_table[index];
-  while (current != NULL) {
-    if (strcmp(current->id, id) == 0) {
-      return current;
-    }
-    current = current->next;
-  }
-  return NULL; // Usuário não encontrado
-}
-
 
 void printUser(const User* user) {
   if (user == NULL) {
@@ -85,7 +48,7 @@ void printUser(const User* user) {
     printf("Email: %s\n", user->email);
     printf("Número de telefone: %s\n", user->phone_number);
     printf("Data de nascimento: %04d/%02d/%02d\n", user->birth_date[0], user->birth_date[1], user->birth_date[2]);
-    printf("Sexo: %c\n", user->sex);
+    printf("Sexo: %s\n", user->sex);
     printf("Passaporte: %s\n", user->passport);
     printf("Código do país: %c%c\n", user->country_code[0], user->country_code[1]);
     printf("Endereço: %s\n", user->address);

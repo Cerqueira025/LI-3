@@ -4,14 +4,14 @@ IDIR = include
 CC = gcc
 
 # Compiler flags
-CFLAGS = -g -Wall -Wextra -pedantic -O0 -I$(IDIR)
+CFLAGS = -g -Wall -Wextra -pedantic -O0 -I$(IDIR) $(shell pkg-config --cflags glib-2.0)
 
 # Default target
 all: main
 
 ODIR = src/obj
 
-LIBS = -lm -lcurses
+LIBS = -lm -lcurses $(shell pkg-config --libs glib-2.0)
 
 DEPS = $(wildcard $(IDIR)/*.h)
 

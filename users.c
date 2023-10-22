@@ -1,96 +1,124 @@
 #include <stdio.h>
+#include <glib.h>
+#include <string.h>
 #include <stdlib.h>
-#include <string.h> // Added for string functions
 
-typedef struct user {
-    char* id;
-    char* name;
-    char* email;
-    char* phone_number;
-    int birth_date[3];
-    char sex;
-    char* passport;
-    char* country_code;
-    char* address;
-    int account_creation[6];
-    char* pay_method;
-    char* account_status;
-} user;
+struct user{
+  char* id;
+  char* name;
+  char* email;
+  char* phone_number; //atenção ao formato
+  char* birth_date; //aaaa/MM/dd -> [aaaa,MM,dd]
+  char* sex;
+  char* passport;
+  char* country_code; //atenção /0
+  char* address;
+  char* account_creation;
+  char* pay_method;
+  char* account_status;
+};
 
-void freeUser(user* u) {
-    free(u->id);
-    free(u->name);
-    free(u->email);
-    free(u->phone_number);
-    free(u->passport);
-    free(u->country_code);
-    free(u->address);
-    free(u->pay_method);
-    free(u->account_status);
+
+struct user* newUser(char* id, char* name, char* email, char* phone_number, char* birth_date, char* sex, char* passport, char* country_code, char* address, char* account_creation, char* pay_method, char* account_status) {
+
+	struct user* new_User=malloc(sizeof(struct user));
+	new_User->id=strdup(id);
+	new_User->name=strdup(name);
+	new_User->email=strdup(email);
+	new_User->phone_number=strdup(phone_number);
+	new_User->birth_date=strdup(birth_date);
+	new_User->sex=strdup(sex);
+	new_User->passport=strdup(passport);
+	new_User->country_code=strdup(country_code);
+	new_User->address=strdup(address);
+	new_User->account_creation=strdup(account_creation);
+	new_User->pay_method=strdup(pay_method);
+	new_User->account_status=strdup(account_status);
+	return new_User;
 }
 
 
-int hash_function(char* user_id) {
-  unsigned int total = 0;
-  for (int i=0;user_id[i];i++) {
-    total+=user_id[i];
-    total*=user_id[i];
-  }
-  return total%10000;
+/*
+char userGender(struct user *u){
+	return u->gender;
 }
 
-void loadUsersFromFile() {
-    FILE* file = fopen("users.csv", "r");
-    if (file == NULL) {
-        printf("Error opening file\n");
-        return;
-    }
-
-    char buffer[1000];
-    user user_list[10000]; // Declare an array of user structs
-    int n = 0;
-
-    while (fgets(buffer, sizeof(buffer), file) != NULL) {
-        user* u= &user_list[n]; // Get a pointer to the current user struct
-
-        // Allocate memory for each string field
-        u->id = (char*)malloc(100);
-        u->name = (char*)malloc(100);
-        u->email = (char*)malloc(100);
-        u->phone_number = (char*)malloc(100);
-        u->passport = (char*)malloc(100);
-        u->country_code = (char*)malloc(4);
-        u->address = (char*)malloc(1000);
-        u->pay_method = (char*)malloc(100);
-        u->account_status = (char*)malloc(100);
-
-        if (!u->id || !u->name || !u->email || !u->phone_number || !u->passport || !u->country_code || !u->address || !u->pay_method || !u->account_status) {
-            printf("Memory allocation failed\n");
-            fclose(file); 
-            return;
-        }
-
-        sscanf(buffer, "%99[^;];%99[^;];%99[^;];%99[^;];%d/%d/%d;%c;%99[^;];%99[^;];%999[^;];%d/%d/%d %d:%d:%d;%99[^;];%99[^\n]",
-            u->id, u->name, u->email, u->phone_number, &u->birth_date[0], &u->birth_date[1], &u->birth_date[2],
-            &u->sex, u->passport, u->country_code, u->address,
-            &u->account_creation[0], &u->account_creation[1], &u->account_creation[2], &u->account_creation[3], &u->account_creation[4], &u->account_creation[5],
-            u->pay_method, u->account_status);
-
-        u = &user_list[hash_function(u->id)];
-
-        printf("User ID: %s\n", user_list[hash_function("MaVaz1704")].id);
-        printf("Account Status: %s\n", user_list[hash_function("MaVaz1704")].account_status);
-        printf("User_key: %d\n\n",hash_function("MaVaz1704"));
-    }
-    fclose(file);
-
-    // Free allocated memory
-    for (int i = 0; i < n; i++) {
-        freeUser(&user_list[i]);
-    }
+char *nameUser(struct user *u){
+	return strdup(u->username);
 }
+
+char *userRealName(struct user *u){
+	return strdup(u->name);
+}
+
+char *getBirthDate(struct user *u){
+	return u->birth_date;
+}
+*/
+
+int parse_users() {
+	char buffer[240];
+	
+	FILE* users = fopen("users_100.csv","r");
+
+	if(users == NULL) return 1;
+
+	fgets(buffer, 240, users); // ignora o cabeçalho
+
+
+	/*id;name;email;phone_number;birth_date;sex;passport;country_code;address;account_creation;pay_method;account_status
+	AlícSá-Mendes;Alícia Sá-Mendes;alícsá-mendes@li3.pt;(351) 259 545 254;1979/11/27;F;CA279133;PT;Avenida Gabriela Guerreiro, 42518-827 Rio Maior;2016/09/10 17:34:41;debit_card;active
+	*/
+	GHashTable *hash = g_hash_table_new(g_str_hash, g_str_equal);
+
+	while(fgets(buffer, 240, users)) {
+
+		char* buffer_aux = buffer;
+		char* id = malloc(99*sizeof(char));		   	   
+		char* name = malloc(99*sizeof(char)); 		   	   
+		char* email = malloc(99*sizeof(char)); 	   	   
+		char* phone_number = malloc(99*sizeof(char)); 	   
+		char* birth_date = malloc(99*sizeof(char));   	   
+		char* sex = malloc(99*sizeof(char)); 		   	   
+		char* passport = malloc(99*sizeof(char)); 	   	   
+		char* country_code = malloc(99*sizeof(char)); 	   
+		char* address = malloc(999*sizeof(char)); 	   	   
+		char* account_creation = malloc(99*sizeof(char)); 
+		char* pay_method = malloc(99*sizeof(char)); 	   
+		char* account_status = malloc(99*sizeof(char)); 
+
+		sscanf(buffer_aux, "%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%99[^;];%999[^;];%99[^;];%99[^;];%99[^\n]",
+            id, name, email, phone_number, birth_date, sex, passport, country_code, address, account_creation, pay_method, account_status);
+  
+
+		struct user* u = newUser(id,name,email,phone_number,birth_date,sex,passport,country_code,address,account_creation,pay_method,account_status);
+		g_hash_table_insert(hash, (u->id), u);
+
+		free(id);
+		free(name);
+		free(email);
+		free(phone_number);
+		free(birth_date);
+		free(sex);
+		free(passport);
+		free(country_code);
+		free(address);
+		free(account_creation);
+		free(pay_method);
+		free(account_status);
+
+	}
+		struct user* usr = g_hash_table_lookup(hash,"EmíVaz-Assunção1873");
+		printf("%s\n\n",usr->phone_number);
+
+	fclose(users);
+	return 0;
+}
+
+
 
 int main() {
-    loadUsersFromFile();
-    return 0;
+	parse_users();
+
+	return 0;
 }

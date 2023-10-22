@@ -3,8 +3,6 @@
 #include "users.h"
 
 int return_hash(char* user_id);
-void readUsersFromFile(UserTable* table, const char* filename);
-
-//void loadUsersFromFile();
+int parse_users();
 
 #endif
