@@ -1,7 +1,6 @@
 #ifndef USERS_H
 #define USERS_H
 
-//typedef struct users user;
 typedef struct User {
   char* id;
   char* name;

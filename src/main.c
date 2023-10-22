@@ -11,6 +11,7 @@
 
 int main() {
   parse_users();
+  parse_reservations();
 
   return 0;
 }

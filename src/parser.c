@@ -8,7 +8,6 @@
 #include "passengers.h"
 #include "users.h"
 
-
 int return_hash(char* user_id) {
   unsigned int total = 0;
   for (int i=0;user_id[i];i++) {
