@@ -15,6 +15,7 @@ int main() {
   parse_users();
   parse_reservations();
   parse_flight();
+  parse_passenger();
 
   return 0;
 }

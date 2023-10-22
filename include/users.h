@@ -20,6 +20,7 @@ typedef struct User {
 struct User* newUser(char* id, char* name, char* email, char* phone_number, char* birth_date, 
                     char* sex, char* passport, char* country_code, char* address, 
                     char* account_creation, char* pay_method, char* account_status);
+int parse_users();
 void freeUser(User* user);
 void printUser(const User* user);
 
