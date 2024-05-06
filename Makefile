@@ -1,35 +1,47 @@
-# Specifies the directory where header files are located
+# Especifica a diretoria onde os arquivos de cabeçalho estão localizados
 IDIR = include
-# Specifies the compiler to be used
+# Especifica o compilador a ser utilizado
 CC = gcc
 
-# Compiler flags
-CFLAGS = -g -Wall -Wextra -pedantic -O0 -I$(IDIR) $(shell pkg-config --cflags glib-2.0)
+# Flags do compilador
+CFLAGS = -g -Wall -Wextra -pedantic -O2 -I$(IDIR) $(shell pkg-config --cflags glib-2.0)
 
-# Default target
-all: main
+# Alvo padrão
+all: main testes
 
+# Especifica o diretoria onde os arquivos .o serão armazenados
 ODIR = src/obj
 
+# Bibliotecas a serem vinculadas ao programa
 LIBS = -lm -lcurses $(shell pkg-config --libs glib-2.0)
 
+# Encontra todos os arquivos de cabeçalho no diretoria 'include'
 DEPS = $(wildcard $(IDIR)/*.h)
 
+# Gera uma lista de arquivos de objeto a partir de arquivos de origem no diretoria 'src'
 OBJ = $(patsubst src/%.c, $(ODIR)/%.o, $(wildcard src/*.c))
 
 $(info $$OBJ is [${OBJ}])
 
-# Build the executable
+# Constrói o executável
 $(ODIR)/%.o: src/%.c $(DEPS)
 	mkdir -p $(ODIR)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-# Compile source files into object files
+# Compila os ficheiros num executável chamado 'programa-principal'
 main: $(OBJ)
-	$(CC) -o prog $^ $(CFLAGS) $(LIBS)
+	$(CC) -o programa-principal $^ $(CFLAGS) $(LIBS)
 
+# Compila os ficheiros num executável chamado 'programa-testes'
+testes: $(OBJ)
+	$(CC) -o programa-testes $^ $(CFLAGS) $(LIBS)
+
+# Informa o make que o alvo clean não representa um arquivo real,
+# mas sim uma ação de limpeza
 .PHONY: clean
 
-# Clean generated files
+# Limpa os arquivos gerados
 clean:
-	rm -f $(ODIR)/*.o prog
+	rm -f $(ODIR)/*.o programa-*
+	rm -f Resultados/*.txt
+	rm -f Resultados/*.csv
